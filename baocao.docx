@@ -1,0 +1,41 @@
+﻿
+Báo cáo kết quả chương trình hệ gợi ý sử dụng KNN 
+
+
+
+Tập dữ liệu: 100k Movie-lens
+
+Ở đây nhóm em đã sử dụng thư viện sklearn có thuật toán KNN đã được implement sẵn. Nhóm tập trung vào dữ liệu gồm 3 column là user_id, movie_id và rating.
+Chúng em sử dụng với k = 20 láng giềng gần nhất, dùng độ đo euclidean tiêu chuẩn mặc định. Sau đó chúng em tính nhãn dự đoán cho item bằng cách tích trung bình các nhãn của láng giềng gần nhất.
+
+Về mặt tính toán,nhóm em tính Item-item CF từ User-user CF bằng cách chuyển vị (transpose) ma trận utility, và coi như items đang rate users. Sau khi tính ra kết quả cuối cùng, ta lại chuyển vị một lần nữa để thu được kết quả.
+
+Cuối cùng nhóm em đánh giá mô hình theo các độ đo RMSE, MAE, NMAE.
+
+User-user : 
+RMSE : 0.9651515870063883
+
+Mean Absolute Error:  0.8031454002901438
+Normalized Mean Absolute Error:  0.20078635007253595
+
+
+item-item:
+RMSE : 0.9896726565973659
+Mean Absolute Error:  0.7932079078652271
+Normalized Mean Absolute Error:  0.20526637172113082
+
+
+Kết quả cho thấy trên tập dữ liệu Movie-lens này, phương pháp user-user CF có kết quả tốt hơn so với phương pháp item-item CF. 
+
+Tuy nhiên theo nhóm tìm hiểu thì user-user CF thực tế có nhiều bất cập:
+
+      - Trên thực tế, số lượng users luôn lớn hơn số lượng items rất nhiều. Kéo theo đó là Similarity matrix là rất lớn với số phần tử phải lưu giữ là hơn 1 nửa của bình phương số lượng users (chú ý rằng ma trận này là đối xứng). Việc này, như đã đề cập ở trên, khiến cho việc lưu trữ ma trận này trong nhiều trường hợp là không khả thi.
+
+	- Ma trận Utility Y thường là rất sparse. Với số lượng users rất lớn so với số lượng items, rất nhiều cột của ma trận này sẽ rất sparse, tức chỉ có một vài phần tử khác 0. Lý do là users thường lười rating. Cũng chính vì việc này, một khi user đó thay đổi rating hoặc rate thêm items, trung bình cộng các ratings cũng như vector chuẩn hoá tương ứng với user này thay đổi nhiều. Kéo theo đó, việc tính toán ma trận Similarity, vốn tốn nhiều bộ nhớ và thời gian, cũng cần được thực hiện lại.
+
+
+
+
+
+
+
